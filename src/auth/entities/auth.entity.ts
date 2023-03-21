@@ -5,7 +5,9 @@ export class Auth {
   @PrimaryGeneratedColumn()
   id: number;
   @Column()
-  name: string;
+  username: string;
+  @Column()
+  password: string;
   @Column()
   email: string;
 }

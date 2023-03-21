@@ -20,17 +20,16 @@ export class AuthService {
   }
 
   async findOne(id: number) {
-    return await this.authRepository.findOneBy({ id: id });
+    return await this.authRepository.findOne({ where: { id: id } });
   }
-
   async update(id: number, updateAuthDto: UpdateAuthDto) {
-    const auth = await this.authRepository.findOneBy({ id: id });
+    const auth = await this.authRepository.findOne({ where: { id: id } });
 
     return this.authRepository.save({ ...auth, ...updateAuthDto });
   }
 
   async remove(id: number) {
-    const auth = await this.authRepository.findOneBy({ id: id });
+    const auth = await this.authRepository.findOne({ where: { id: id } });
 
     return this.authRepository.remove(auth);
   }
