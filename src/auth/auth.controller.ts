@@ -18,30 +18,30 @@ export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
   @Post()
-  create(@Body() createAuthDto: CreateAuthDto) {
-    return this.authService.create(createAuthDto);
+  async create(@Body() createAuthDto: CreateAuthDto) {
+    return await this.authService.create(createAuthDto);
   }
 
   @Get()
-  findAll() {
-    return this.authService.findAll();
+  async findAll() {
+    return await this.authService.findAll();
   }
 
   @Get(':id')
-  findOne(@Param('id', new ParseUUIDPipe()) id: string) {
-    return this.authService.findOne(id);
+  async findOne(@Param('id', new ParseUUIDPipe()) id: string) {
+    return await this.authService.findOne(id);
   }
 
   @Put(':id')
-  update(
+  async update(
     @Param('id', new ParseUUIDPipe()) id: string,
     @Body() updateAuthDto: UpdateAuthDto,
   ) {
-    return this.authService.update(id, updateAuthDto);
+    return await this.authService.update(id, updateAuthDto);
   }
 
   @Delete(':id')
-  remove(@Param('id', new ParseUUIDPipe()) id: string) {
-    return this.authService.remove(id);
+  async remove(@Param('id', new ParseUUIDPipe()) id: string) {
+    return await this.authService.remove(id);
   }
 }
