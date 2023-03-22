@@ -6,6 +6,7 @@ import {
   Put,
   Delete,
   Param,
+  ParseUUIDPipe,
 } from '@nestjs/common';
 
 import { AuthService } from './auth.service';
@@ -27,17 +28,20 @@ export class AuthController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.authService.findOne(+id);
+  findOne(@Param('id', new ParseUUIDPipe()) id: string) {
+    return this.authService.findOne(id);
   }
 
   @Put(':id')
-  update(@Param('id') id: string, @Body() updateAuthDto: UpdateAuthDto) {
-    return this.authService.update(+id, updateAuthDto);
+  update(
+    @Param('id', new ParseUUIDPipe()) id: string,
+    @Body() updateAuthDto: UpdateAuthDto,
+  ) {
+    return this.authService.update(id, updateAuthDto);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.authService.remove(+id);
+  remove(@Param('id', new ParseUUIDPipe()) id: string) {
+    return this.authService.remove(id);
   }
 }

@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CreateAuthDto } from './dto/create-auth.dto';
@@ -15,22 +15,30 @@ export class AuthService {
     return this.authRepository.save(Auth);
   }
 
-  async findAll() {
+  async findAll(): Promise<Auth[]> {
     return await this.authRepository.find();
   }
 
-  async findOne(id: number) {
-    return await this.authRepository.findOne({ where: { id: id } });
+  async findOne(id: string): Promise<Auth> {
+    const user = await this.authRepository.findOne({ where: { id: id } });
+    if (!user) {
+      throw new HttpException('Not Found', HttpStatus.NOT_FOUND);
+    }
+    return user;
   }
-  async update(id: number, updateAuthDto: UpdateAuthDto) {
-    const auth = await this.authRepository.findOne({ where: { id: id } });
-
-    return this.authRepository.save({ ...auth, ...updateAuthDto });
+  async update(id: string, updateAuthDto: UpdateAuthDto): Promise<Auth> {
+    const user = await this.authRepository.findOne({ where: { id: id } });
+    if (!user) {
+      throw new HttpException('Not Found', HttpStatus.NOT_FOUND);
+    }
+    return this.authRepository.save({ ...user, ...updateAuthDto });
   }
 
-  async remove(id: number) {
-    const auth = await this.authRepository.findOne({ where: { id: id } });
-
-    return this.authRepository.remove(auth);
+  async remove(id: string): Promise<Auth> {
+    const user = await this.authRepository.findOne({ where: { id: id } });
+    if (!user) {
+      throw new HttpException('Not Found', HttpStatus.NOT_FOUND);
+    }
+    return this.authRepository.remove(user);
   }
 }
