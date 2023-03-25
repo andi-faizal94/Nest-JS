@@ -7,6 +7,8 @@ import {
   Delete,
   Param,
   ParseUUIDPipe,
+  HttpStatus,
+  HttpException,
 } from '@nestjs/common';
 
 import { AuthService } from './auth.service';
@@ -21,17 +23,35 @@ export class AuthController {
 
   @Post()
   async create(@Body() createAuthDto: CreateAuthDto) {
-    return await this.authService.create(createAuthDto);
+    const createdUser = await this.authService.create(createAuthDto);
+    return {
+      statusCode: HttpStatus.CREATED,
+      message: 'User created successfully',
+      data: createdUser,
+    };
   }
 
   @Get()
   async findAll() {
-    return await this.authService.findAll();
+    const users = await this.authService.findAll();
+    return {
+      statusCode: HttpStatus.OK,
+      message: 'Users fetched successfully',
+      data: users,
+    };
   }
 
   @Get(':id')
   async findOne(@Param('id', new ParseUUIDPipe()) id: string) {
-    return await this.authService.findOne(id);
+    const user = await this.authService.findOne(id);
+    if (!user) {
+      throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+    }
+    return {
+      statusCode: HttpStatus.OK,
+      message: 'User fetched successfully',
+      data: user,
+    };
   }
 
   @Put(':id')
@@ -39,12 +59,28 @@ export class AuthController {
     @Param('id', new ParseUUIDPipe()) id: string,
     @Body() updateAuthDto: UpdateAuthDto,
   ) {
-    return await this.authService.update(id, updateAuthDto);
+    const updatedUser = await this.authService.update(id, updateAuthDto);
+    if (!updatedUser) {
+      throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+    }
+    return {
+      statusCode: HttpStatus.OK,
+      message: 'User updated successfully',
+      data: updatedUser,
+    };
   }
 
   @Delete(':id')
   async remove(@Param('id', new ParseUUIDPipe()) id: string) {
-    return await this.authService.remove(id);
+    const deleteUser = await this.authService.remove(id);
+    if (!deleteUser) {
+      throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+    }
+    return {
+      statusCode: HttpStatus.OK,
+      message: 'User deleted successfully',
+      data: deleteUser,
+    };
   }
 
   @Post('register')
